@@ -1,9 +1,14 @@
 from flask import Flask, render_template
+from flask import jsonify
 from flask import redirect, url_for, request
+from flask_cors import CORS, cross_origin
+import time
 import requests
 import os
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 class Cache():
     search_results = None
@@ -11,6 +16,42 @@ class Cache():
     selected_page = None
 
 stored_data = Cache()
+
+@app.route('/time')
+@cross_origin()
+def get_current_time():
+    
+    return {'time': time.time()}
+
+@app.route('/getImage')
+@cross_origin()
+def get_image():
+    id = request.args.get('id')
+    url = os.path.join('https://api.consumet.org/manga/mangadex/info/',id)
+
+    response = requests.get(url)
+    data = response.json()
+
+    print(data["image"])
+
+    return jsonify(url=data["image"])
+
+
+
+@app.route('/search', methods = ["GET"])
+@cross_origin()
+def get_browse_results():
+    title = request.args.get('title')
+    page = request.args.get('page');
+
+    url = os.path.join('https://api.consumet.org/manga/mangadex/',title+"?"+"page="+page)
+    
+    response = requests.get(url)
+
+    data = response.json()
+
+    return jsonify(data=data["results"], page = data["currentPage"])
+
 
 @app.route("/", methods = ["POST","GET"])
 def home():
@@ -35,7 +76,7 @@ def success():
     return render_template("success.html", data = stored_data.search_results)
 
 
-@app.route("/search")
+@app.route("/search2")
 def search():
     return "search engine"
 
