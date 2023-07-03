@@ -7,21 +7,25 @@ import atomize from 'atomize';
 
 function Browser({searchParams}) {
 
+
     const [results, setResults] = useState([]);
 
-    const [images, setImages ] = useState([]);
+    
 
     const navigate = useNavigate();
 
     const handleClick = (event) => {
         let currID = event.target.dataset.id
+
         console.log(currID)
         navigate("/mangaDetails", {state:{id: currID}})
     }
 
     useEffect(() => {
         fetch('/search?' + new URLSearchParams({title: 'demon', page: '2'})).then(res => res.json())
-        .then(data => data.data)
+        .then(data => {
+            //setData(data.data)
+            return data.data})
         .then((data) => {
 
             //set up request arrays
@@ -39,27 +43,25 @@ function Browser({searchParams}) {
                 }
             
             
-            Promise.allSettled(promises).then(
+            return Promise.allSettled(promises).then(
                 (res)=>{
-                    setImages(res)
                     console.log(res)
+                    return [data, res]
                 }
-            )
-            
-            return data;
+            );
       })
-        .then( async (input) => {
+        .then( (input) => {
 
-            let data = input
+            let data = input[0]
+            let imgs = input[1]
 
             const rows = []
 
-            console.log(images)
 
             const columns = (data.map( (item, i)=> {
                 return (
                     <Col size = "3">
-                        <Image src={images[i]?images[i].value.url:""} alt={item.title}></Image>
+                        <Image src={imgs[i]?imgs[i].value.url:null} alt={item.title}></Image>
                         <Anchor data-id = {item.id} onClick={(event)=>{handleClick(event)}}>{item.title}</Anchor>
                     </Col>
                     )
