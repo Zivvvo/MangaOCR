@@ -1,15 +1,20 @@
 import React, {useState, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {Div, Anchor, Image} from 'atomize';
-import { Row, Col } from "atomize";
+import { Row, Col, Icon} from "atomize";
+import {useLocation} from 'react-router-dom';
+import {server} from '../proxy'
+import {PageIndex} from '../components/pageTurner'
 
 import atomize from 'atomize';
 
-function Browser({searchParams}) {
+function Browser() {
 
 
     const [results, setResults] = useState([]);
+    const [loading, setLoading] = useState(false)
 
+    const location = useLocation();
     
 
     const navigate = useNavigate();
@@ -22,7 +27,9 @@ function Browser({searchParams}) {
     }
 
     useEffect(() => {
-        fetch('/search?' + new URLSearchParams({title: 'demon', page: '2'})).then(res => res.json())
+        console.log(location.state)
+        setLoading(true)
+        fetch(server+'/search?' + new URLSearchParams({title: location.state.title, page: location.state.page})).then(res => res.json())
         .then(data => {
             //setData(data.data)
             return data.data})
@@ -34,7 +41,7 @@ function Browser({searchParams}) {
 
             for (let i = 0; i < data.length; i++) {
 
-                promises.push(fetch('/getImage?' + new URLSearchParams({id: data[i].id}))
+                promises.push(fetch(server+'/getImage?' + new URLSearchParams({id: data[i].id}))
                 .then(res => {
                     console.log("new requests made")
                     return res.json()
@@ -61,7 +68,7 @@ function Browser({searchParams}) {
             const columns = (data.map( (item, i)=> {
                 return (
                     <Col size = "3">
-                        <Image src={imgs[i]?imgs[i].value.url:null} alt={item.title}></Image>
+                        <Image hoverShadow="4" cursor="pointer" rounded="md"  data-id = {item.id} src={imgs[i]?imgs[i].value.url:null } onClick={(event)=>{handleClick(event)}} alt={item.title}></Image>
                         <Anchor data-id = {item.id} onClick={(event)=>{handleClick(event)}}>{item.title}</Anchor>
                     </Col>
                     )
@@ -79,6 +86,7 @@ function Browser({searchParams}) {
             }
             
             setResults(rows)
+            setLoading(false)
             
                 
         }
@@ -88,15 +96,21 @@ function Browser({searchParams}) {
     return ( 
     
     <>
+    {loading?<Div p = {{x: "1rem", y: "2rem"}} textAlign="center" justify="space-around">
+         <Icon name="Loading" size="40px" /></Div>:
+        null}
     
-    <Div>
+
+    <Div justify="center">
+
+        
         
         {results?
         results
-        : (null)}
+        : null}
         
 
-        
+        <PageIndex query={location.state.title} nPages={10} currentPage={location.state.page}></PageIndex>
 
 
     </Div>

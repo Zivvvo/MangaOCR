@@ -41,14 +41,17 @@ def get_image():
 @app.route('/search', methods = ["GET"])
 @cross_origin()
 def get_browse_results():
-    title = request.args.get('title')
-    page = request.args.get('page');
+    title = str(request.args.get('title'))
+    page = str(request.args.get('page'));
 
     url = os.path.join('https://api.consumet.org/manga/mangadex/',title+"?"+"page="+page)
     
+
     response = requests.get(url)
 
     data = response.json()
+
+    
 
     return jsonify(data=data["results"], page = data["currentPage"])
 

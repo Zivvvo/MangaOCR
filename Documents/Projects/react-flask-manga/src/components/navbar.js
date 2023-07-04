@@ -12,7 +12,7 @@ function Navbar() {
 
     const menuItems = [
         {name: "Home", url : "/home"},
-        {name: "Browse", url: "/browse"},
+        {name: "Scan", url: "/scan"},
         {name: "Contact", url: "/contact"}]
 
     const toggle = (event) => {
