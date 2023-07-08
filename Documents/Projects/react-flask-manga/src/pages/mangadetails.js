@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {Div, Image, Anchor} from 'atomize'
 import {useLocation, useNavigate} from 'react-router-dom'
 import { server } from '../proxy';
+import { ChapterBrowser } from '../components/chapterBrowser';
 
 function MangaDetails() {
     const location = useLocation();
@@ -14,7 +15,6 @@ function MangaDetails() {
             description: null,
             genres: null,
             image: null,
-            chapterList: [],
         }
     );
 
@@ -41,11 +41,13 @@ function MangaDetails() {
         })
         .then(res=>{
             console.log(res)
-            setChapterList(res.map((item, i )=>{
+            setChapterList(res)
+
+            /*res.map((item, i )=>{
                 return (
                     <li columns= "100px 3"><Anchor data-id = {item.id} onClick={(event)=>{handleClick(event)}}>{item.chapterNumber}: {item.title}</Anchor></li>
                 )
-            }))
+            } */
 
         })
     }, [])
@@ -59,10 +61,11 @@ function MangaDetails() {
         <h1>{mangaDetails.title}</h1>
         <p>{mangaDetails.description}</p>
 
+        <ChapterBrowser data={chapterList}></ChapterBrowser>
         
         
     </Div>
-    <ul>{chapterList?chapterList:null}</ul>
+    
     
     </> );
 }
