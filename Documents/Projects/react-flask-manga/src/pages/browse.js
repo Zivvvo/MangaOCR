@@ -67,9 +67,10 @@ function Browser() {
 
             const columns = (data.map( (item, i)=> {
                 return (
-                    <Col size = "3">
-                        <Image hoverShadow="4" cursor="pointer" rounded="md"  data-id = {item.id} src={imgs[i]?imgs[i].value.url:null } onClick={(event)=>{handleClick(event)}} alt={item.title}></Image>
-                        <Anchor data-id = {item.id} onClick={(event)=>{handleClick(event)}}>{item.title}</Anchor>
+                    <Col textAlign="center" size = "3">
+                        <Image w={{xs:"6rem", sm:"8rem", md:"10 rem", lg: "14 rem", xl: "14 rem"}} h="auto"  hoverShadow="4" cursor="pointer" rounded="md"  data-id = {item.id} src={imgs[i].value?imgs[i].value.url:null } onClick={(event)=>{handleClick(event)}} alt={item.title}></Image>
+                        <br/>
+                        <Anchor  data-id = {item.id} onClick={(event)=>{handleClick(event)}}>{item.title}</Anchor>
                     </Col>
                     )
             }

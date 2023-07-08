@@ -56,6 +56,26 @@ def get_browse_results():
     return jsonify(data=data["results"], page = data["currentPage"])
 
 
+@app.route('/info', methods = ["GET"])
+@cross_origin()
+def get_info():
+    id = str(request.args.get('id'))
+
+    print(id)
+
+    url = os.path.join('https://api.consumet.org/manga/mangadex/info', id).replace("\\","/")
+
+    print(url)
+
+    response = requests.get(url)
+
+    data = response.json()
+
+    print(data["description"])
+
+    return jsonify(title = data["title"], chapters=data["chapters"], description = data["description"]["en"], genres = data["genres"], image = data["image"])
+
+
 @app.route("/", methods = ["POST","GET"])
 def home():
     if request.method == 'POST':
@@ -66,7 +86,6 @@ def home():
       data = response.json()
 
       stored_data.search_results = data
-
 
       return redirect(url_for('success'))
     else:
