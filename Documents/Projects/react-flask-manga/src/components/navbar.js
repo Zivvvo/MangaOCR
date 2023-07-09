@@ -26,7 +26,7 @@ function Navbar() {
 
     }
     return (
-        <>
+        <div top ="0" position="sticky">
         <Div
         d={{xs:"flex", md:"flex"}}
         justify={{xs:"space-between", md:"space-around"}}
@@ -70,7 +70,7 @@ function Navbar() {
         p={{ x: "0rem", y: "0rem" }}>
         {open? (<DropMenu menuItems = {menuItems}/>) : null}
         
-    </Div></>);
+    </Div></div>);
 }
 
 export default Navbar;

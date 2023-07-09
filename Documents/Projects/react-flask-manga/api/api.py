@@ -75,6 +75,24 @@ def get_info():
 
     return jsonify(title = data["title"], chapters=data["chapters"], description = data["description"]["en"], genres = data["genres"], image = data["image"])
 
+@app.route("/read", methods = ["GET"])
+@cross_origin()
+def get_pages():
+    id = str(request.args.get('id'))
+
+    print(id)
+
+    url = os.path.join('https://api.consumet.org/manga/mangadex/read', id).replace("\\","/")
+
+    print(url)
+
+    response = requests.get(url)
+
+    data = response.json()
+
+
+    return jsonify(imgs = data)
+
 
 @app.route("/", methods = ["POST","GET"])
 def home():

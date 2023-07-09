@@ -1,24 +1,13 @@
 import React from 'react'
 import {Div} from 'atomize'
 import {useEffect, useState, useMemo} from 'react'
-import {Row, Col, Button, Anchor, Icon} from 'atomize'
+import {Row, Col, Button, Anchor, Icon, Image} from 'atomize'
 import { useNavigate } from 'react-router-dom'
 import Pagination from './pagination'
 
-let PageSize = 10;
+let PageSize = 1;
 
-export function ChapterBrowser({data}){
-
-    console.log(data)
-
-    const navigate = useNavigate()
-
-    const handleClick = (event) => {
-        let currID = event.target.dataset.id
-
-        console.log(currID)
-        navigate("/reader", {state:{id: currID}})
-    }
+export function PageBrowser({data}){
 
 
 const [currentPage, setCurrentPage] = useState(1);
@@ -33,19 +22,12 @@ const [currentPage, setCurrentPage] = useState(1);
     <> <Div d="flex" justify="center">
 
     <table margin-left="auto" margin-right="auto">
-        <thead >
-          <tr>
-            <th>Chapter Number</th>
-            <th>Title</th>
-
-          </tr>
-        </thead>
+        
         <tbody>
           {currentTableData.map(item => {
             return (
               <tr>
-                <td>{item.chapterNumber}</td>
-                <td><Anchor data-id = {item.id} onClick={(event)=>{handleClick(event)}}>{item.title}</Anchor></td>
+                <td><Image src={item.img} alt="missing page"/></td>
               </tr>
             );
           })}

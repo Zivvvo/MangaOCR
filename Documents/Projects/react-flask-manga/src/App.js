@@ -26,11 +26,13 @@ function App() {
     
       <Div>
       <Router>
-      <Navbar/>
+      <Div overflow="hidden">
+      <Navbar/></Div>
             <Routes>
                 <Route path='/' element={<Home />} />
                 <Route path="/browse" element={<Browse/>}/>
                 <Route path="/mangaDetails" element={<Details/>}/>
+                <Route path="/reader" element={<Reader/>}/>
             </Routes>
         </Router>
         <Div bg="gray200"
