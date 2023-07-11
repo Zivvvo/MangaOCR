@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Div, Image, Anchor} from 'atomize'
+import {Div, Image, Anchor, Icon} from 'atomize'
 import {useLocation, useNavigate} from 'react-router-dom'
 import { server } from '../proxy';
 import { ChapterBrowser } from '../components/chapterBrowser';
@@ -56,7 +56,7 @@ function MangaDetails() {
 
     return ( <><Div textAlign="center">
 
-        <Image  src={mangaDetails.image} rounded="md" h = "auto" w={{xs:"10rem",md:"25rem"}} alt="missing image"></Image>
+        <Image  src={mangaDetails.image} rounded="md" h = "auto" w={{xs:"10rem",md:"25rem"}} alt={<Icon name="Loading" size="40px" />}></Image>
         <br/>
         <h1>{mangaDetails.title}</h1>
         <p>{mangaDetails.description}</p>

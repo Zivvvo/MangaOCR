@@ -17,6 +17,8 @@ class Cache():
 
 stored_data = Cache()
 
+
+
 @app.route('/time')
 @cross_origin()
 def get_current_time():
@@ -32,7 +34,7 @@ def get_image():
     response = requests.get(url)
     data = response.json()
 
-    print(data["image"])
+    #print(data["image"])
 
     return jsonify(url=data["image"])
 
@@ -46,15 +48,11 @@ def get_browse_results():
 
     url = os.path.join('https://api.consumet.org/manga/mangadex/',title+"?"+"page="+page)
     
-
     response = requests.get(url)
 
     data = response.json()
 
-    
-
     return jsonify(data=data["results"], page = data["currentPage"])
-
 
 @app.route('/info', methods = ["GET"])
 @cross_origin()
@@ -65,95 +63,78 @@ def get_info():
 
     url = os.path.join('https://api.consumet.org/manga/mangadex/info', id).replace("\\","/")
 
-    print(url)
+    #print(url)
 
     response = requests.get(url)
 
     data = response.json()
 
-    print(data["description"])
+    #print(data["description"])
 
     return jsonify(title = data["title"], chapters=data["chapters"], description = data["description"]["en"], genres = data["genres"], image = data["image"])
 
 @app.route("/read", methods = ["GET"])
 @cross_origin()
 def get_pages():
+    
     id = str(request.args.get('id'))
 
-    print(id)
+    #print(id)
 
     url = os.path.join('https://api.consumet.org/manga/mangadex/read', id).replace("\\","/")
 
-    print(url)
 
     response = requests.get(url)
 
     data = response.json()
 
+    #print(data)
 
     return jsonify(imgs = data)
 
 
-@app.route("/", methods = ["POST","GET"])
-def home():
-    if request.method == 'POST':
-      query = request.form['nm']
-      url = os.path.join("https://api.consumet.org/manga/mangadex", query).replace("\\","/")
-      print(url)
-      response = requests.get(url)
-      data = response.json()
+import csv
 
-      stored_data.search_results = data
-
-      return redirect(url_for('success'))
-    else:
-        return render_template("home.html")
-
-@app.route('/success')
-def success():
-    #render Manga Pages from search tool
-    #print(stored_data.search_results)
-    return render_template("success.html", data = stored_data.search_results)
+reader = csv.reader(open('resources/languages.csv', 'r'))
+lang_dict = {}
+for row in reader:
+   k, v = row
+   lang_dict[k] = v
 
 
-@app.route("/search2")
-def search():
-    return "search engine"
+@app.route("/scan", methods = ["GET"])
+@cross_origin()
+def scan():
+    img = request.args.get('img')
+    curr_lang = request.args.get('from')
+    to_lang = request.args.get('to')
 
-@app.route("/select", methods=['GET'])
-def select():
-    args = request.args
+    print(lang_dict[curr_lang])
 
-    url = "https://api.consumet.org/manga/mangadex/info/"+ args.get("id")
+    print(img)
+
     
-    print(url)
+    url = "https://api.ocr.space/parse/image"
 
-    response = requests.get(url)
-    data = response.json()
+    payload = {'language': lang_dict[curr_lang],
+    'isOverlayRequired': 'true',
+    'url': img,
+    'iscreatesearchablepdf': 'false',
+    'issearchablepdfhidetextlayer': 'false'}
+    files=[
 
-    stored_data.selected_manga = data
+    ]
+    headers = {
+    'apikey': 'K86896070688957'
+    }
 
-    print(data)
 
-    return render_template("select.html", data = stored_data.selected_manga)
+    response = requests.request("POST", url, headers=headers, data=payload, files=files)
 
+    print(response.json())
 
-@app.route("/about", methods= ["GET"])
-def about():
-    return render_template("about.html")
+    return jsonify(results = response.json())
 
-@app.route("/read", methods=["GET"])
-def read():
-
-    args = request.args
-
-    url = "https://api.consumet.org/manga/mangadex/read/"+ args.get("id")
-    response = requests.get(url)
-    data = response.json()
-
-    stored_data.selected_page = data
-
-    return render_template("read.html", data = enumerate(data), data2 = data)
 
 
 if __name__ == "__main__":

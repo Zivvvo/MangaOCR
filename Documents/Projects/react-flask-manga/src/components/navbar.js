@@ -2,13 +2,16 @@ import {Div, Dropdown, Anchor, Button, Icon} from 'atomize';
 import  SearchBar  from "./searchbar";
 import React, {useState} from 'react'
 import DropMenu from './dropdown';
+import ShowWithAnimation from '../animations/index'
+
 
 const display = { xs: 'None', md: "inline-block" }
 const display2 = { xs: 'inline-block', md: 'None'}
 
 function Navbar() {
-
+    
     const [open, setOpen] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
 
     const menuItems = [
         {name: "Home", url : "/home"},
@@ -19,9 +22,11 @@ function Navbar() {
         if (open === true) {
             console.log(open)
             setOpen(false)
+            setIsMounted(!isMounted)
         }else{
             console.log(open)
             setOpen(true)
+            setIsMounted(!isMounted)
         }
 
     }
@@ -63,12 +68,15 @@ function Navbar() {
   </Button>
         </Div>
 </Div>
+
 <Div
         d={{md: "none"}}
         justify={{xs:"space-between", md:"space-around"}}
         w="100vw"
-        p={{ x: "0rem", y: "0rem" }}>
-        {open? (<DropMenu menuItems = {menuItems}/>) : null}
+        p={{ x: "0rem", y: "0rem" }}
+         
+        >
+        <ShowWithAnimation isMounted={isMounted}><DropMenu menuItems = {menuItems}/></ShowWithAnimation>
         
     </Div></div>);
 }
