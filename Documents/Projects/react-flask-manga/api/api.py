@@ -133,6 +133,10 @@ def scan():
 
     print(response.json())
 
+    #perform clustering on lines that are close together, put into one LineText
+
+    
+
     return jsonify(results = response.json())
 
 
